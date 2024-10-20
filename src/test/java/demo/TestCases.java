@@ -1,6 +1,7 @@
 package demo;
-
+import org.testng.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -10,9 +11,14 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.sql.Wrapper;
+import java.time.Instant;
+import java.util.List;
 import java.util.logging.Level;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import demo.wrappers.Wrappers;
+//import dev.failsafe.internal.util.Assert;
+
 
 public class TestCases {
     ChromeDriver driver;
@@ -47,6 +53,85 @@ public class TestCases {
         driver = new ChromeDriver(options);
 
         driver.manage().window().maximize();
+    }
+
+    @Test
+    public void testCase01() throws InterruptedException{
+        System.out.println("Start Test case: testCase01");
+        driver.get("https://www.google.com");
+        driver.get("https://docs.google.com/forms/d/e/1FAIpQLSep9LTMntH5YqIXa5nkiPKSs283kdwitBBhXWyZdAS-e4CxBQ/viewform");
+        WebElement inputBox1=driver.findElement(By.xpath("//div[@class='Xb9hP']/input[@type='text']"));
+        Wrappers.enterText(inputBox1, "Crio Learner");
+        
+    }
+
+    @Test
+    public void testCase02() throws InterruptedException{
+        System.out.println("Start Test case: testCase02");
+        WebElement textareaInputBox=driver.findElement(By.xpath("//textarea[@class='KHxj8b tL9Q4c']"));
+        String content="I want to be the best QA Engineer!";
+        long currentEpochTimeMs = Instant.now().getEpochSecond();
+        Wrappers.enterText(textareaInputBox, content+""+currentEpochTimeMs);
+        Thread.sleep(3000);
+
+    }
+
+    @Test
+    public void testCase03() throws InterruptedException{
+        String text=Wrappers.radioTextFun("0 - 2");
+        WebElement radioButton=driver.findElement(By.xpath("//div[@class='nWQGrd zwllIb']//span[contains(text(),'"+text+"')]"));
+        radioButton.click();
+        Thread.sleep(3000);
+
+    }
+
+    @Test
+    public void testCase04() throws InterruptedException{
+        List<WebElement> checkboxText=driver.findElements(By.xpath("//div[@class='Y6Myld']//span"));
+        for(WebElement valcheck : checkboxText){
+            System.out.println(valcheck.getText());
+        }
+        Wrappers.checkBoxClick(checkboxText, "Java");
+        Wrappers.checkBoxClick(checkboxText, "Selenium");
+        Thread.sleep(3000);
+
+    }
+
+    @Test
+    public void testCase05() throws InterruptedException{
+        WebElement dropDownSelect=driver.findElement(By.xpath("//span[text()='Choose']"));
+        dropDownSelect.click();
+        Thread.sleep(3000);
+        List<WebElement> dropdownList=driver.findElements(By.xpath("//div[contains(@class,'OA0qNb ncFHed QXL7Te')]//span[not(contains(text(),'Choose'))]"));
+        Wrappers.dropdownClick(dropdownList, "Ms");
+        Thread.sleep(3000);
+    }
+
+    @Test
+    public void testCase06() throws InterruptedException{
+        WebElement dateSelect=driver.findElement(By.xpath("//input[@type='date']"));
+        String sevenDaysbefore=Wrappers.getLocalDate();
+        Wrappers.enterText(dateSelect, sevenDaysbefore);
+        Thread.sleep(3000);
+        
+    }
+
+    @Test
+    public void testCase07() throws InterruptedException{
+       WebElement hour=driver.findElement(By.xpath("//input[@aria-label='Hour']"));
+       WebElement min=driver.findElement(By.xpath("//input[@aria-label='Minute']"));
+       WebElement subbutton=driver.findElement(By.xpath("//div[@role='button']//span[text()='Submit']"));
+
+       Wrappers.enterText(hour, "07");
+       Wrappers.enterText(min, "30");
+       subbutton.click();
+        
+       WebElement successmsg=driver.findElement(By.xpath("//div[@class='pdLVYe LgNcQe']/span"));
+       String expectedMsg="QA Assignment - Automate Google Forms";
+       
+       Assert.assertEquals(successmsg.getText().trim(),expectedMsg);
+       System.out.println(successmsg.getText());
+       
     }
 
     @AfterTest
