@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -18,6 +19,10 @@ import java.util.logging.Level;
 // import io.github.bonigarcia.wdm.WebDriverManager;
 import demo.wrappers.Wrappers;
 //import dev.failsafe.internal.util.Assert;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.time.Duration;
+
 
 
 public class TestCases {
@@ -118,6 +123,8 @@ public class TestCases {
 
     @Test
     public void testCase07() throws InterruptedException{
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
        WebElement hour=driver.findElement(By.xpath("//input[@aria-label='Hour']"));
        WebElement min=driver.findElement(By.xpath("//input[@aria-label='Minute']"));
        WebElement subbutton=driver.findElement(By.xpath("//div[@role='button']//span[text()='Submit']"));
@@ -125,12 +132,19 @@ public class TestCases {
        Wrappers.enterText(hour, "07");
        Wrappers.enterText(min, "30");
        subbutton.click();
-        
-       WebElement successmsg=driver.findElement(By.xpath("//div[@class='pdLVYe LgNcQe']/span"));
-       String expectedMsg="QA Assignment - Automate Google Forms";
+       Thread.sleep(3000);
        
-       Assert.assertEquals(successmsg.getText().trim(),expectedMsg);
-       System.out.println(successmsg.getText());
+    WebElement successmsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='vHW8K']")));
+
+    
+    String actualMsg = successmsg.getText().trim();
+    System.out.println("Success message: " + actualMsg);
+
+    
+    String expectedMsg = "Thanks for your response, Automation Wizard!";
+
+    // Assert that the success message matches the expected message
+    Assert.assertEquals(actualMsg, expectedMsg, "The success message does not match the expected value.");
        
     }
 
